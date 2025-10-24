@@ -13,7 +13,7 @@ services:
 
   wordpress:
     build: .
-    user: "1001:1001"
+    user: "1000:1000"
     depends_on:
       - db
     ports:
@@ -59,7 +59,7 @@ services:
       ADMIN_PASSWORD: ${ADMIN_PASSWORD}
       ADMIN_EMAIL: ${ADMIN_EMAIL}
     entrypoint: wp
-    user: "1001:1001"
+    user: "1000:1000"
 
 volumes:
   db_data:

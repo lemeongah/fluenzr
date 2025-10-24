@@ -36,7 +36,7 @@ fix_permissions() {
     fi
 
     echo "🔐 $description : $target_dir"
-    sudo chown -R 33:33 "$target_dir"
+    sudo chown -R 1000:1000 "$target_dir"
     sudo find "$target_dir" -type d -exec chmod 755 {} \;
     sudo find "$target_dir" -type f -exec chmod 644 {} \;
 }

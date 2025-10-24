@@ -33,3 +33,18 @@ RemoteIPInternalProxy 192.168.0.0/16\n\
 ServerTokens Prod\n\
 ServerSignature Off' > /etc/apache2/conf-available/proxy-https.conf \
     && a2enconf proxy-https
+
+# Create user with UID 1000 to match host
+RUN useradd -m -u 1000 wordpress && \
+    usermod -aG www-data wordpress
+
+# Fix permissions for plugin installation and uploads
+RUN mkdir -p /var/www/html/wp-content/upgrade && \
+    mkdir -p /var/www/html/wp-content/uploads && \
+    chown -R 1000:1000 /var/www/html && \
+    find /var/www/html -type d -exec chmod 755 {} \; && \
+    find /var/www/html -type f -exec chmod 644 {} \;
+
+# Configure Apache to run as user 1000
+RUN sed -i 's/export APACHE_RUN_USER=www-data/export APACHE_RUN_USER=wordpress/' /etc/apache2/envvars && \
+    sed -i 's/export APACHE_RUN_GROUP=www-data/export APACHE_RUN_GROUP=wordpress/' /etc/apache2/envvars
