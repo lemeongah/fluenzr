@@ -13,7 +13,7 @@ services:
 
   wordpress:
     build: .
-    user: "1000:1000"
+    user: "33:33"
     depends_on:
       - db
     ports:
@@ -33,19 +33,16 @@ services:
       PROD_URL: ${PROD_URL}
       FOLDER_NAME: ${FOLDER_NAME}
     volumes:
-      - ./wp:/var/www/html
+      - wordpress_data:/var/www/html
       - ./assets:/var/www/html/wp-content/themes/generatepress-child/
       - ./assets:/var/www/html/wp-content/uploads/custom
-
-      # Le fichier styles.css sera accessible dans /var/www/html/wp-content/uploads/custom/css/styles.css
-      # via le montage du dossier assets ci-dessus
 
   wpcli:
     image: wordpress:cli
     depends_on:
       - wordpress
     volumes:
-      - ./wp:/var/www/html
+      - wordpress_data:/var/www/html
       - ./assets:/assets
     environment:
       WP_CLI_CACHE_DIR: /tmp/wp-cli-cache
@@ -59,8 +56,10 @@ services:
       ADMIN_PASSWORD: ${ADMIN_PASSWORD}
       ADMIN_EMAIL: ${ADMIN_EMAIL}
     entrypoint: wp
-    user: "1000:1000"
+    user: "33:33"
 
 volumes:
   db_data:
     name: ${COMPOSE_PROJECT_NAME}_db_data
+  wordpress_data:
+    name: ${COMPOSE_PROJECT_NAME}_wordpress_data
