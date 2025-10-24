@@ -118,13 +118,17 @@ wpcli theme install generatepress --activate
 echo "👶 Génération du thème enfant depuis assets/..."
 CHILD_DIR="/var/www/html/wp-content/themes/generatepress-child"
 
-# Copier les fichiers du thème enfant via wpcli (accès container)
+# Créer le répertoire du thème enfant
+docker compose exec -T wordpress mkdir -p "$CHILD_DIR"
+
+# Copier les fichiers du thème enfant depuis les volumes montés
+# Les assets sont montés dans wp-content/themes/generatepress-child/
 if [ -f "./assets/functions.php" ]; then
-  docker compose exec -T wordpress cp /assets/functions.php "$CHILD_DIR/functions.php"
+  docker compose exec -T wordpress cp /var/www/html/wp-content/themes/generatepress-child/functions.php "$CHILD_DIR/functions.php" 2>/dev/null || true
 fi
 
 if [ -f "./assets/style.css" ]; then
-  docker compose exec -T wordpress cp /assets/style.css "$CHILD_DIR/style.css"
+  docker compose exec -T wordpress cp /var/www/html/wp-content/themes/generatepress-child/style.css "$CHILD_DIR/style.css" 2>/dev/null || true
 fi
 
 # Créer style.css minimal s'il n'existe pas
@@ -146,11 +150,15 @@ echo "🔁 Permaliens..."
 wpcli rewrite structure "/%postname%/"
 wpcli rewrite flush --hard
 
-# Ajouter le logo du site
+# Ajouter le logo du site si present
 echo "🖼️ Import du logo..."
-LOGO_ID=$(wpcli media import /assets/logo.png --title="Logo" --porcelain 2>/dev/null || echo "0")
-if [ "$LOGO_ID" != "0" ]; then
-  wpcli theme mod set custom_logo "$LOGO_ID"
+if [ -f "./assets/logo.png" ]; then
+  LOGO_ID=$(wpcli media import /var/www/html/wp-content/themes/generatepress-child/logo.png --title="Logo" --porcelain 2>/dev/null || echo "0")
+  if [ "$LOGO_ID" != "0" ]; then
+    wpcli theme mod set custom_logo "$LOGO_ID"
+  fi
+else
+  echo "⚠️  logo.png non trouvé dans assets/"
 fi
 
 echo "📋 (Re)Création du menu principal avec les catégories..."
