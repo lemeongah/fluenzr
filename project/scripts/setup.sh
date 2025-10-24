@@ -117,37 +117,42 @@ wpcli theme install generatepress --activate
 
 echo "👶 Génération du thème enfant depuis assets/..."
 
-# Les assets sont montés comme volume dans wp-content/themes/generatepress-child/
-# Il faut juste s'assurer que le répertoire existe et que WordPress le scanne
+# Le répertoire assets/ contient les fichiers du thème enfant et est monté comme volume
+# generatepress-child va lire directement depuis ce volume mount
+# Il faut juste s'assurer que WordPress le détecte
 
-CHILD_DIR="/var/www/html/wp-content/themes/generatepress-child"
+# Vérifier que le répertoire existe
+if [ -d "./assets" ] && [ -f "./assets/style.css" ]; then
+  echo "✅ Assets trouvés, le child theme est via volume mount"
 
-# Créer répertoire et minimal style.css si pas d'assets
-docker compose exec -T wordpress mkdir -p "$CHILD_DIR" || true
+  # Laisser un peu de temps pour que le volume soit bien monté
+  sleep 1
 
-# Créer un style.css minimal s'il n'existe pas déjà (assets en volume ne l'a peut-être pas fourni)
-docker compose exec -T wordpress sh -c "
-if [ ! -f '$CHILD_DIR/style.css' ]; then
+  # Activer le thème enfant (il doit être détectable via le volume mount)
+  wpcli theme activate generatepress-child 2>&1 || {
+    echo "⚠️  Activation du child theme échouée"
+    echo "📋 Themes disponibles :"
+    wpcli theme list
+  }
+else
+  echo "⚠️  Assets non trouvés ou style.css manquant"
+
+  # Créer un minimal child theme en fallback
+  CHILD_DIR="/var/www/html/wp-content/themes/generatepress-child"
+  docker compose exec -T wordpress sh -c "
+  mkdir -p '$CHILD_DIR'
   cat > '$CHILD_DIR/style.css' << 'EOF'
 /*
 Theme Name: GeneratePress Child
 Template: generatepress
 Version: 1.0
-Author: Your Company
 */
 EOF
+  "
+
+  sleep 2
+  wpcli theme activate generatepress-child
 fi
-" || true
-
-# Attendre et faire rescan des thèmes par WordPress
-sleep 3
-wpcli theme list --allow-root > /dev/null 2>&1 || true
-
-# Flushwarning the theme cache
-wpcli cache flush --all 2>/dev/null || true
-
-# Activer le thème enfant
-wpcli theme activate generatepress-child
 
 echo "🔁 Permaliens..."
 wpcli rewrite structure "/%postname%/"
