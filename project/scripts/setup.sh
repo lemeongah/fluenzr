@@ -115,104 +115,30 @@ echo "🎨 Installation du thème GeneratePress..."
 # Récupérer la version du thème depuis WordPress.org
 wpcli theme install generatepress --activate
 
-echo "👶 Génération du thème enfant personnalisé..."
+echo "👶 Activation du thème enfant personnalisé..."
 
-# Créer le child theme dans un volume Docker (pas un mount host)
-# Cela évite les problèmes de permissions
+# Le child theme est monté via volume dans ./assets
+# Les fichiers style.css, functions.php, logo.png etc. sont directement accessibles
 
-CHILD_DIR="/var/www/html/wp-content/themes/generatepress-child"
+# Attendre que WordPress rescanne les thèmes et reconnaisse le child theme
+sleep 3
 
-# Créer le répertoire du child theme
-docker compose exec -T wordpress mkdir -p "$CHILD_DIR"
-
-# Créer style.css
-docker compose exec -T wordpress sh -c "cat > $CHILD_DIR/style.css << 'EOF'
-/*
-Theme Name: GeneratePress Child
-Template: generatepress
-Version: 1.0
-Author: Fluenzr
-Description: Child theme personnalisé pour Fluenzr
-License: GNU General Public License v2 or later
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
-*/
-
-/* Import du CSS du thème parent */
-@import url(\"../generatepress/assets/css/main.min.css\");
-
-/* Styles personnalisés */
-:root {
-    --background-color: #fff;
-    --font-color: #000;
-    --secondary-color: #208bfe;
-    --accent-color: #208bfe;
-}
-EOF
-"
-
-# Créer functions.php avec support des logos et favicons
-docker compose exec -T wordpress sh -c "cat > $CHILD_DIR/functions.php << 'EOF'
-<?php
-/**
- * GeneratePress Child Theme Functions
- */
-
-// Ajouter le support du logo personnalisé
-add_action( 'after_setup_theme', 'generatepress_child_setup' );
-function generatepress_child_setup() {
-    add_theme_support( 'custom-logo', array(
-        'height'      => 60,
-        'width'       => 200,
-        'flex-height' => true,
-        'flex-width'  => true,
-    ) );
-    add_theme_support( 'site-icon' );
-}
-
-// Charger les styles du child theme
-add_action( 'wp_enqueue_scripts', 'generatepress_child_enqueue_styles' );
-function generatepress_child_enqueue_styles() {
-    wp_enqueue_style( 'generatepress-child', get_stylesheet_uri() );
-
-    // Charger les styles personnalisés du dossier assets s'ils existent
-    $custom_css = get_stylesheet_directory() . '/assets/custom-styles.css';
-    if ( file_exists( $custom_css ) ) {
-        wp_enqueue_style( 'generatepress-custom', get_stylesheet_directory_uri() . '/assets/custom-styles.css' );
-    }
-}
-EOF
-"
-
-# Copier les fichiers assets si disponibles
-if [ -f "./assets/functions.php" ]; then
-  docker compose exec -T wordpress cp ./assets/functions.php "$CHILD_DIR/functions.php" 2>/dev/null || echo "⚠️  Impossible de copier functions.php"
-fi
-
-# Copier le logo et favicon
-if [ -f "./assets/logo.png" ]; then
-  docker compose exec -T wordpress cp ./assets/logo.png "$CHILD_DIR/logo.png" 2>/dev/null || echo "⚠️  Impossible de copier logo.png"
-fi
-
-if [ -f "./assets/favicon.png" ]; then
-  docker compose exec -T wordpress cp ./assets/favicon.png "$CHILD_DIR/favicon.png" 2>/dev/null || echo "⚠️  Impossible de copier favicon.png"
-fi
-
-# Copier les styles personnalisés
-if [ -f "./assets/style.css" ]; then
-  docker compose exec -T wordpress mkdir -p "$CHILD_DIR/assets"
-  docker compose exec -T wordpress cp ./assets/style.css "$CHILD_DIR/assets/custom-styles.css" 2>/dev/null || echo "⚠️  Impossible de copier styles"
-fi
-
-# Attendre que WordPress rescanne les thèmes
-sleep 2
+# Flushout cache avant l'activation
+wpcli cache flush --all 2>/dev/null || true
 
 # Activer le child theme
-echo "🎨 Activation du child theme..."
-wpcli theme activate generatepress-child || {
-  echo "⚠️  Impossible d'activer le child theme"
+echo "🎨 Activation du child theme GeneratePress..."
+if wpcli theme activate generatepress-child 2>/dev/null; then
+  echo "✅ Child theme activé avec succès"
+else
+  echo "⚠️  Impossible d'activer le child theme - vérifiez les assets"
   echo "📋 Themes disponibles :"
   wpcli theme list
-}
+fi
+
+# Vérifier que le child theme est maintenant actif
+ACTIVE_THEME=$(wpcli theme list | grep active | awk '{print $1}')
+echo "✅ Thème actif : $ACTIVE_THEME"
 
 echo "🔁 Permaliens..."
 wpcli rewrite structure "/%postname%/"

@@ -34,8 +34,7 @@ services:
       FOLDER_NAME: ${FOLDER_NAME}
     volumes:
       - wordpress_data:/var/www/html
-      - generatepress_child_data:/var/www/html/wp-content/themes/generatepress-child/
-      - ./assets:/var/www/html/wp-content/themes/generatepress-child/assets/
+      - ./assets:/var/www/html/wp-content/themes/generatepress-child/
       - ./assets:/var/www/html/wp-content/uploads/custom
 
   wpcli:
@@ -44,7 +43,6 @@ services:
       - wordpress
     volumes:
       - wordpress_data:/var/www/html
-      - generatepress_child_data:/var/www/html/wp-content/themes/generatepress-child/
       - ./assets:/assets
     environment:
       WP_CLI_CACHE_DIR: /tmp/wp-cli-cache
@@ -70,5 +68,3 @@ volumes:
     name: ${COMPOSE_PROJECT_NAME}_db_data
   wordpress_data:
     name: ${COMPOSE_PROJECT_NAME}_wordpress_data
-  generatepress_child_data:
-    name: ${COMPOSE_PROJECT_NAME}_generatepress_child
