@@ -121,12 +121,7 @@ CHILD_DIR="/var/www/html/wp-content/themes/generatepress-child"
 # Créer le répertoire du thème enfant
 docker compose exec -T wordpress mkdir -p "$CHILD_DIR"
 
-# Copier les fichiers du thème enfant depuis les volumes montés
-# Les assets sont montés dans wp-content/themes/generatepress-child/
-if [ -f "./assets/functions.php" ]; then
-  docker compose exec -T wordpress cp /var/www/html/wp-content/themes/generatepress-child/functions.php "$CHILD_DIR/functions.php" 2>/dev/null || true
-fi
-
+# Copier style.css depuis assets s'il existe, sinon créer minimal
 if [ -f "./assets/style.css" ]; then
   docker compose exec -T wordpress cp /var/www/html/wp-content/themes/generatepress-child/style.css "$CHILD_DIR/style.css" 2>/dev/null || true
 fi
@@ -139,11 +134,31 @@ if [ ! -f '$CHILD_DIR/style.css' ]; then
 Theme Name: GeneratePress Child
 Template: generatepress
 Version: 1.0
+Author: Your Name
+Author URI: https://example.com
+Description: Thème enfant GeneratePress personnalisé
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: generatepress-child
 */
 CHILD_EOF
 fi
 "
 
+# Copier les autres fichiers du thème enfant s'ils existent
+if [ -f "./assets/functions.php" ]; then
+  docker compose exec -T wordpress cp /var/www/html/wp-content/themes/generatepress-child/functions.php "$CHILD_DIR/functions.php" 2>/dev/null || true
+fi
+
+if [ -f "./assets/header.php" ]; then
+  docker compose exec -T wordpress cp /var/www/html/wp-content/themes/generatepress-child/header.php "$CHILD_DIR/header.php" 2>/dev/null || true
+fi
+
+if [ -f "./assets/footer.php" ]; then
+  docker compose exec -T wordpress cp /var/www/html/wp-content/themes/generatepress-child/footer.php "$CHILD_DIR/footer.php" 2>/dev/null || true
+fi
+
+# Activer le thème enfant
 wpcli theme activate generatepress-child
 
 echo "🔁 Permaliens..."
