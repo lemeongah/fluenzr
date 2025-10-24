@@ -117,25 +117,44 @@ wpcli theme install generatepress --activate
 
 echo "👶 Génération du thème enfant depuis assets/..."
 
-# Utiliser WP-CLI pour créer le scaffold du thème enfant
-wpcli scaffold child-theme generatepress-child --parent_theme=generatepress --theme_name="GeneratePress Child" --author="Your Company" 2>/dev/null || echo "⚠️  Child theme scaffold créé ou existe déjà"
+# Créer le répertoire et les fichiers de base du child theme
+CHILD_DIR="/var/www/html/wp-content/themes/generatepress-child"
+docker compose exec -T wordpress mkdir -p "$CHILD_DIR"
+
+# Créer style.css minimal d'abord si pas d'assets
+if [ ! -f "./assets/style.css" ]; then
+  docker compose exec -T wordpress sh -c "cat > $CHILD_DIR/style.css << 'EOF'
+/*
+Theme Name: GeneratePress Child
+Template: generatepress
+Version: 1.0
+*/
+EOF
+" || true
+fi
+
+# Attendre que les fichiers assets soient accessibles
+sleep 2
 
 # Copier les fichiers personnalisés depuis assets s'ils existent
 if [ -f "./assets/style.css" ]; then
-  docker compose exec -T wpcli cp /assets/style.css /var/www/html/wp-content/themes/generatepress-child/style.css 2>/dev/null || true
+  docker compose exec -T wordpress cp /var/www/html/wp-content/themes/generatepress-child/style.css "$CHILD_DIR/style.css" 2>/dev/null || true
 fi
 
 if [ -f "./assets/functions.php" ]; then
-  docker compose exec -T wpcli cp /assets/functions.php /var/www/html/wp-content/themes/generatepress-child/functions.php 2>/dev/null || true
+  docker compose exec -T wordpress cp /var/www/html/wp-content/themes/generatepress-child/functions.php "$CHILD_DIR/functions.php" 2>/dev/null || true
 fi
 
 if [ -f "./assets/header.php" ]; then
-  docker compose exec -T wpcli cp /assets/header.php /var/www/html/wp-content/themes/generatepress-child/header.php 2>/dev/null || true
+  docker compose exec -T wordpress cp /var/www/html/wp-content/themes/generatepress-child/header.php "$CHILD_DIR/header.php" 2>/dev/null || true
 fi
 
 if [ -f "./assets/footer.php" ]; then
-  docker compose exec -T wpcli cp /assets/footer.php /var/www/html/wp-content/themes/generatepress-child/footer.php 2>/dev/null || true
+  docker compose exec -T wordpress cp /var/www/html/wp-content/themes/generatepress-child/footer.php "$CHILD_DIR/footer.php" 2>/dev/null || true
 fi
+
+# Attendre que WordPress rescanne les thèmes
+sleep 2
 
 # Activer le thème enfant
 wpcli theme activate generatepress-child
