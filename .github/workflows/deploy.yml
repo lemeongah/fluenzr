@@ -1,0 +1,72 @@
+name: Deploy WordPress Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to production via SSH
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: gillesah
+          key: ${{ secrets.GILLESAH_SSH_KEY }}
+          script: |
+            set -e
+
+            # Déterminer le FOLDER_NAME depuis le repository name
+            REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2)
+            DEPLOY_DIR="/var/www/$REPO_NAME"
+
+            echo "📦 Préparation du déploiement..."
+            mkdir -p "$DEPLOY_DIR"
+            cd "$DEPLOY_DIR"
+
+            # Clean up .git if it exists and has permission issues
+            if [ -d .git ]; then
+              echo "🧹 Nettoyage du répertoire .git existant..."
+              rm -rf .git 2>/dev/null || {
+                echo "⚠️  Impossible de supprimer .git directement, recréation du repo..."
+                rm -rf .git
+              }
+            fi
+
+            # Initialize git repo (fresh)
+            echo "📥 Initialisation du repository..."
+            git init
+            git remote add origin git@github.com:${{ github.repository }}.git
+
+            echo "🔄 Synchronisation du code depuis GitHub..."
+            git fetch origin main 2>&1 || {
+              echo "⚠️  Fetch échoué, tentative de configuration SSH..."
+              ssh-keyscan -H github.com >> ~/.ssh/known_hosts 2>/dev/null || true
+              git fetch origin main
+            }
+
+            echo "✨ Reset au dernier commit..."
+            git reset --hard origin/main
+            git clean -fd
+
+            echo "📊 État du déploiement..."
+            echo "  Repository: ${{ github.repository }}"
+            echo "  Branch: main"
+            echo "  Commit: $(git rev-parse --short HEAD)"
+
+            echo "🚀 Redémarrage des services Docker..."
+            cd "$DEPLOY_DIR/project"
+
+            # Arrêter les services mais préserver les volumes (DB)
+            docker compose down || true
+
+            # Redémarrer avec reconstruction
+            docker compose up -d --build
+
+            echo "✅ Déploiement terminé pour $REPO_NAME"
