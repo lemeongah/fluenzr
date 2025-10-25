@@ -1,0 +1,448 @@
+/**
+ * FLUENZR - DESIGN MODERNE & BRUT
+ * ====================================
+ * Un design minimaliste avec typographie forte
+ * Couleur principale: Violet (#6840de)
+ * Style: Moderne, épuré, asymétrique
+ */
+
+/* ========================================
+   1. HEADER & LOGO
+   ======================================== */
+
+.site-header {
+    padding: 2rem 0;
+    border-bottom: 1px solid #f0f0f0;
+    background: #fff;
+}
+
+.inside-header {
+    display: flex;
+    align-items: start;
+    justify-content: flex-start;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.site-logo img {
+    height: auto;
+    max-width: 250px !important;
+    width: auto;
+}
+
+/* ========================================
+   2. NAVIGATION
+   ======================================== */
+.nav-float-right #site-navigation {
+    margin-left: 0;
+}
+.main-navigation {
+    margin-left: 0;
+}
+.main-nav > ul {
+    display: flex;
+    flex-direction: row;
+    gap: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.main-nav li {
+    margin: 0;
+    padding: 0;
+}
+
+/* Styling du logo - qui est dans le ul.menu */
+.main-nav .site-logo {
+    display: block !important;
+    margin-right: 0 !important;
+    margin-bottom: 1.5rem !important;
+}
+
+.main-nav .site-logo img {
+    display: block;
+}
+
+.main-nav li a {
+    font-size: 1.1rem !important;
+    font-weight: 700 !important;
+    text-decoration: none;
+    color: #000;
+    position: relative;
+    transition: all 0.3s ease;
+    text-transform: uppercase !important;
+    letter-spacing: 1.2px;
+    display: block;
+    padding: 0.75rem 0;
+    border-bottom: 10px solid transparent !important;
+    text-align: right !important;
+}
+
+.main-nav li a:hover,
+.main-nav li a:focus,
+.main-nav li a:active,
+.main-nav li.current-menu-item a {
+    color: #6840de !important;
+    border-bottom: 10px solid #6840de !important;
+    background-color: transparent !important;
+}
+
+/* Override des styles GeneratePress */
+.main-navigation .main-nav ul li:not([class*="current-menu-"]):hover > a,
+.main-navigation .main-nav ul li:not([class*="current-menu-"]):focus > a,
+.main-navigation .main-nav ul li.sfHover:not([class*="current-menu-"]) > a {
+    color: #6840de !important;
+    border-bottom-color: #6840de !important;
+}
+
+.main-navigation .main-nav ul li[class*="current-menu-"] > a {
+    color: #6840de !important;
+    border-bottom-color: #6840de !important;
+}
+
+/* ========================================
+   3. HERO / ACCUEIL
+   ======================================== */
+
+body.home {
+    background-color: #fafafa;
+}
+
+.entry-header {
+    display: none !important;
+}
+
+/* ========================================
+   4. MOSAÏQUE FLUENZR (ACCUEIL)
+   ======================================== */
+
+.home-mosaic {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    padding: 4rem 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Carte standard (1x1) */
+.home-mosaic li {
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 0;
+    padding: 0;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: none;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.home-mosaic li:hover {
+    border-color: #6840de;
+    box-shadow: 0 8px 24px rgba(104, 64, 222, 0.12);
+}
+
+/* Image featured */
+.home-mosaic .wp-block-latest-posts__featured-image {
+    overflow: hidden;
+    background: linear-gradient(135deg, #6840de08, #6840de04);
+    aspect-ratio: 4/3;
+    margin: 0;
+    padding: 0;
+}
+
+.home-mosaic .wp-block-latest-posts__featured-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+.home-mosaic li:hover .wp-block-latest-posts__featured-image img {
+    transform: scale(1.05);
+}
+
+/* Contenu de la carte */
+.home-mosaic .wp-block-latest-posts__post-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    line-height: 1.4;
+    color: #000;
+    margin: 1.5rem;
+    margin-bottom: 0.5rem;
+    text-decoration: none;
+}
+
+.home-mosaic li:hover .wp-block-latest-posts__post-title {
+    color: #6840de;
+}
+
+/* Date */
+.home-mosaic .wp-block-latest-posts__post-date {
+    font-size: 0.85rem;
+    color: #999;
+    margin: 0 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+/* Excerpt */
+.home-mosaic .wp-block-latest-posts__post-excerpt {
+    font-size: 0.95rem;
+    color: #666;
+    line-height: 1.6;
+    margin: 1rem 1.5rem 1.5rem;
+    flex: 1;
+}
+
+/* ========================================
+   5. CARTES SPÉCIALES (WIDE & FULL-WIDTH)
+   ======================================== */
+
+/* Carte WIDE (2x1) */
+.home-mosaic li.wide {
+    grid-column: span 2;
+}
+
+/* Carte FULL-WIDTH (3x1) */
+.home-mosaic li.full-width {
+    grid-column: span 3;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+}
+
+.home-mosaic li.full-width .wp-block-latest-posts__featured-image {
+    aspect-ratio: auto;
+    height: 100%;
+    border-radius: 0;
+}
+
+.home-mosaic li.full-width .full-width-content {
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.home-mosaic li.full-width .wp-block-latest-posts__post-title {
+    font-size: 1.8rem;
+    margin: 0 0 1rem 0;
+}
+
+.home-mosaic li.full-width .wp-block-latest-posts__post-excerpt {
+    margin: 0;
+    color: #666;
+}
+
+/* Catégorie badge */
+.post-category {
+    display: inline-block;
+    background-color: #6840de;
+    color: #fff;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    border-radius: 0;
+    text-decoration: none;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.post-category:hover {
+    background-color: #5629c2;
+}
+
+/* ========================================
+   6. RESPONSIVE
+   ======================================== */
+
+@media (max-width: 1024px) {
+    .home-mosaic {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+        padding: 3rem 1.5rem;
+    }
+
+    .home-mosaic li.wide,
+    .home-mosaic li.full-width {
+        grid-column: span 2;
+    }
+
+    .home-mosaic li.full-width {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .home-mosaic li.full-width .wp-block-latest-posts__featured-image {
+        min-height: 250px;
+    }
+
+    .home-mosaic li.full-width .full-width-content {
+        padding: 2rem;
+    }
+
+    .main-nav > ul {
+        gap: 1.5rem;
+    }
+
+    .main-nav a {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .home-mosaic {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 2rem 1rem;
+    }
+
+    .home-mosaic li.wide,
+    .home-mosaic li.full-width {
+        grid-column: span 1;
+    }
+
+    .main-navigation {
+        display: none;
+    }
+
+    .site-header {
+        padding: 1.5rem 0;
+    }
+
+    .site-logo img {
+        max-width: 180px;
+    }
+
+    .inside-header {
+        padding: 0 1rem;
+    }
+}
+
+/* ========================================
+   7. PAGES DE CATÉGORIES
+   ======================================== */
+
+.archive .entry-header,
+.category .entry-header {
+    background: linear-gradient(135deg, #6840de, #5629c2);
+    color: #fff;
+    padding: 4rem 2rem;
+    text-align: left;
+    border-bottom: 0;
+    margin-bottom: 3rem;
+}
+
+.archive .entry-header h1,
+.category .entry-header h1 {
+    color: #fff;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.archive .entry-header .archive-meta,
+.category .entry-header .archive-meta {
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: 0.5rem;
+}
+
+/* ========================================
+   8. FOOTER
+   ======================================== */
+
+.site-footer {
+    background: #000;
+    color: #fff;
+    padding: 4rem 2rem;
+    margin-top: 4rem;
+}
+
+.site-info {
+    background: #000;
+    color: #fff;
+    text-align: center;
+    padding: 2rem;
+    border-top: 1px solid #333;
+}
+
+.site-info a {
+    color: #6840de;
+    text-decoration: none;
+}
+
+.site-info a:hover {
+    text-decoration: underline;
+}
+
+/* ========================================
+   9. UTILITAIRES
+   ======================================== */
+
+.wp-block-latest-posts {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.wp-block-latest-posts li {
+    margin-bottom: 0;
+}
+
+/* Retirer les styles par défaut des liens */
+a {
+    transition: all 0.3s ease;
+}
+
+/* Boutons */
+button,
+.button,
+input[type="submit"] {
+    background-color: #6840de;
+    color: #fff;
+    border: 0;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    border-radius: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button:hover,
+.button:hover,
+input[type="submit"]:hover {
+    background-color: #5629c2;
+}
+
+/* ========================================
+   10. ANIMATIONS
+   ======================================== */
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.home-mosaic li {
+    animation: slideInUp 0.6s ease-out both;
+}
+
+.home-mosaic li:nth-child(1) { animation-delay: 0.1s; }
+.home-mosaic li:nth-child(2) { animation-delay: 0.2s; }
+.home-mosaic li:nth-child(3) { animation-delay: 0.3s; }
+.home-mosaic li:nth-child(4) { animation-delay: 0.4s; }
+.home-mosaic li:nth-child(5) { animation-delay: 0.5s; }
+.home-mosaic li:nth-child(6) { animation-delay: 0.6s; }
