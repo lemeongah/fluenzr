@@ -7,10 +7,11 @@ source .env
 
 # Catégories par défaut si non définies dans .env
 if [ -z "$CATEGORIES" ]; then
-  CATEGORIES="social-trends|Tendances Social Media strategies|Stratégies pour Performer tools|Outils & IA"
+  CATEGORIES="social-trends|Tendances strategies|Stratégies tools|Outils"
 fi
 
-# Convertir la chaîne CATEGORIES en tableau
+# Convertir la chaîne CATEGORIES en tableau (séparateur: espace entre les paires "slug|label")
+# Format: "slug1|label1 slug2|label2 slug3|label3"
 IFS=' ' read -ra CATEGORIES_ARRAY <<< "$CATEGORIES"
 export WP_CLI_PHP_ARGS='-d memory_limit=512M'
 
@@ -126,31 +127,26 @@ sleep 3
 # Flushout cache avant l'activation
 wpcli cache flush --all 2>/dev/null || true
 
-# Activer le child theme
+# Activer le child theme avec PHP (plus fiable que wpcli)
 echo "🎨 Activation du child theme GeneratePress..."
-if wpcli theme activate generatepress-child 2>/dev/null; then
-  echo "✅ Child theme activé avec succès"
-else
-  echo "⚠️  Impossible d'activer le child theme - vérifiez les assets"
-  echo "📋 Themes disponibles :"
-  wpcli theme list
-fi
-
-# Vérifier que le child theme est maintenant actif
-ACTIVE_THEME=$(wpcli theme list | grep active | awk '{print $1}')
-echo "✅ Thème actif : $ACTIVE_THEME"
+docker compose exec -T wordpress php -r "
+define('WP_USE_THEMES', false);
+require('/var/www/html/wp-load.php');
+\$result = switch_theme('generatepress-child');
+if (is_wp_error(\$result)) {
+    exit(1);
+}
+echo 'Theme activated: ' . wp_get_theme()->get('Name') . \"\n\";
+" && echo "✅ Child theme activé avec succès" || echo "⚠️  Impossible d'activer le child theme"
 
 echo "🔁 Permaliens..."
 wpcli rewrite structure "/%postname%/"
 wpcli rewrite flush --hard
 
-# Ajouter le logo du site si present
-echo "🖼️ Import du logo..."
+# Ajouter le logo du site depuis les assets (sans importer dans la médiathèque)
+echo "🖼️ Configuration du logo..."
 if [ -f "./assets/logo.png" ]; then
-  LOGO_ID=$(wpcli media import /var/www/html/wp-content/themes/generatepress-child/logo.png --title="Logo" --porcelain 2>/dev/null || echo "0")
-  if [ "$LOGO_ID" != "0" ]; then
-    wpcli theme mod set custom_logo "$LOGO_ID"
-  fi
+  echo "✅ logo.png trouvé dans assets/"
 else
   echo "⚠️  logo.png non trouvé dans assets/"
 fi

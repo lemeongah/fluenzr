@@ -21,6 +21,48 @@ function is_production()
     return (strpos($site_url, 'localhost') === false && strpos($site_url, '127.0.0.1') === false);
 }
 
+// Ajouter le support du logo personnalisé depuis les assets
+add_action('after_setup_theme', 'theme_setup');
+function theme_setup()
+{
+    add_theme_support('custom-logo', array(
+        'height'      => 60,
+        'width'       => 200,
+        'flex-height' => true,
+        'flex-width'  => true,
+    ));
+    add_theme_support('site-icon');
+}
+
+// Afficher le logo directement depuis les assets en remplaçant le site-branding
+add_filter('wp_nav_menu_items', 'prepend_logo_to_nav', 10, 2);
+function prepend_logo_to_nav($items, $args)
+{
+    // Vérifier si c'est le menu principal
+    if ($args->theme_location !== 'primary') {
+        return $items;
+    }
+
+    // Vérifier si logo.png existe dans les assets
+    $logo_path = '/wp-content/uploads/custom/logo.png';
+    $file_path = ABSPATH . 'wp-content/uploads/custom/logo.png';
+
+    if (!file_exists($file_path)) {
+        return $items;
+    }
+
+    $site_url = home_url();
+    $site_name = get_bloginfo('name');
+    $logo_url = $site_url . $logo_path;
+
+    $logo_html = '<div class="site-logo" style="display: inline-block; margin-right: auto;">';
+    $logo_html .= '<a href="' . esc_url($site_url) . '" class="custom-logo-link" title="' . esc_attr($site_name) . '">';
+    $logo_html .= '<img src="' . esc_url($logo_url) . '" alt="' . esc_attr($site_name) . '" class="header-image is-logo-image" style="height: auto; max-width: 200px;" />';
+    $logo_html .= '</a></div>';
+
+    return $logo_html . $items;
+}
+
 // Enregistrer le thème parent et les styles personnalisés
 add_action('wp_enqueue_scripts', 'theme_enqueue_styles');
 function theme_enqueue_styles()
