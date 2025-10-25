@@ -40,6 +40,12 @@
 .main-navigation {
     margin-left: 0;
 }
+.inside-header {
+    max-width: 100vw!important;
+}
+.nav-float-right #site-navigation {
+    margin-left: 0!important;
+}
 .main-nav > ul {
     display: flex;
     flex-direction: row;
