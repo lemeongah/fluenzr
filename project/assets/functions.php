@@ -21,6 +21,23 @@ function is_production()
     return (strpos($site_url, 'localhost') === false && strpos($site_url, '127.0.0.1') === false);
 }
 
+// ========================================
+// AUGMENTER LES LIMITES D'UPLOAD
+// ========================================
+// Augmenter la limite d'upload à 100MB (vs 2MB par défaut)
+// Note: Le Dockerfile est configuré avec 64M, on augmente à 100M ici
+@ini_set('upload_max_filesize', '100M');
+@ini_set('post_max_size', '100M');
+@ini_set('memory_limit', '512M');
+
+// Filtre WordPress pour augmenter la taille max de fichier uploadable
+add_filter('upload_size_limit', 'increase_upload_size_limit');
+function increase_upload_size_limit($size)
+{
+    // Retourner 100MB en bytes (100 * 1024 * 1024)
+    return 100 * 1024 * 1024;
+}
+
 // Ajouter le support du logo personnalisé depuis les assets
 add_action('after_setup_theme', 'theme_setup');
 function theme_setup()
@@ -57,7 +74,7 @@ function prepend_logo_to_nav($items, $args)
 
     $logo_html = '<div class="site-logo" style="display: inline-block; margin-right: auto;">';
     $logo_html .= '<a href="' . esc_url($site_url) . '" class="custom-logo-link" title="' . esc_attr($site_name) . '">';
-    $logo_html .= '<img src="' . esc_url($logo_url) . '" alt="' . esc_attr($site_name) . '" class="header-image is-logo-image" style="height: auto; max-width: 200px;" />';
+    $logo_html .= '<img src="' . esc_url($logo_url) . '" alt="' . esc_attr($site_name) . '" class="header-image is-logo-image" style="height: auto; max-width: 280px;" />';
     $logo_html .= '</a></div>';
 
     return $logo_html . $items;
@@ -84,6 +101,14 @@ function theme_enqueue_styles()
             ['site-vars'],
             false
         );
+
+    // Charger le design Fluenzr personnalisé
+    wp_enqueue_style(
+        'fluenzr-design',
+        get_stylesheet_directory_uri() . '/fluenzr-design.css',
+        ['site-vars'],
+        '1.0.2'
+    );
 
     // Utiliser le bon chemin selon l'environnement
     if (is_production()) {
