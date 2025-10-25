@@ -15,8 +15,8 @@ Version: 1.0
     --font-color-light: #fff;
     --font-color-dark: #000;
     --font-color-dark-light: #000;
-    --secondary-color: #208bfe;
-    --accent-color: #208bfe;
+    --secondary-color: #6840de;
+    --accent-color: #6840de;
     --text-muted: #666;
     --border-color: #e0e0e0;
     --hover-color: #f5f5f5;
@@ -24,10 +24,10 @@ Version: 1.0
     /* === COULEURS HEADER/NAVIGATION === */
     --header-bg: #fff;
     --nav-text-color: #000;
-    --nav-hover-color: #208bfe;
-    --nav-active-color: #208bfe;
+    --nav-hover-color: #6840de;
+    --nav-active-color: #6840de;
     --nav-bg-hover: transparent;
-    --nav-border-hover: #208bfe;
+    --nav-border-hover: #6840de;
 
     /* === COULEURS FOOTER === */
     --footer-bg: #fff;
@@ -42,10 +42,10 @@ Version: 1.0
     --card-hover-bg: #f9f9f9;
 
     /* === COULEURS CATÉGORIES === */
-    --category-bg: #208bfe;
+    --category-bg: #6840de;
     --category-text: #fff;
-    --category-border: #208bfe;
-    --category-hover-bg: #1a73d9;
+    --category-border: #6840de;
+    --category-hover-bg: #6840de;
 
     /* === TYPOGRAPHIE === */
     --font-family-primary: "Lato", sans-serif;
@@ -134,4 +134,7 @@ Version: 1.0
     --breakpoint-mobile: 767px;
     --breakpoint-tablet: 1024px;
     --breakpoint-desktop: 1200px;
+}
+.inside-header {
+    justify-content: flex-start!important;
 }
