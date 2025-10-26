@@ -2,8 +2,10 @@
  * FLUENZR - DESIGN MODERNE & BRUT
  * ====================================
  * Un design minimaliste avec typographie forte
- * Couleur principale: Violet (#6840de)
+ * Couleur principale: Violet (--secondary-color)
  * Style: Moderne, épuré, asymétrique
+ *
+ * NOTE: Ce fichier utilise les variables CSS définies dans style.css
  */
 
 /* ========================================
@@ -11,9 +13,9 @@
    ======================================== */
 
 .site-header {
-    padding: 2rem 0;
-    border-bottom: 1px solid #f0f0f0;
-    background: #fff;
+    padding: var(--spacing-xl) 0;
+    border-bottom: var(--border-width) solid #f0f0f0;
+    background: var(--background-color);
 }
 
 .inside-header {
@@ -22,7 +24,7 @@
     justify-content: flex-start;
     max-width: 1400px;
     margin: 0 auto;
-    padding: 0 2rem;
+    padding: 0 var(--spacing-xl);
 }
 
 .site-logo img {
@@ -61,13 +63,20 @@
     padding: 0;
 }
 
+
+/* personnalisation de home*/
+.home-mosaic li.full-width.restructured {
+    border: 15px solid var(--font-color);
+}
 /* Styling du logo - qui est dans le ul.menu */
 .main-nav .site-logo {
     display: block !important;
     margin-right: 0 !important;
-    margin-bottom: 1.5rem !important;
+    margin-bottom: var(--spacing-lg) !important;
 }
-
+.home-mosaic li.single-normal {
+    border: 15px solid  var(--secondary-color);
+}
 .main-nav .site-logo img {
     display: block;
 }
@@ -76,13 +85,13 @@
     font-size: 1.1rem !important;
     font-weight: 700 !important;
     text-decoration: none;
-    color: #000;
+    color: var(--nav-text-color);
     position: relative;
-    transition: all 0.3s ease;
+    transition: var(--transition-normal);
     text-transform: uppercase !important;
     letter-spacing: 1.2px;
     display: block;
-    padding: 0.75rem 0;
+    padding: var(--spacing-md) 0;
     border-bottom: 10px solid transparent !important;
     text-align: right !important;
 }
@@ -91,8 +100,8 @@
 .main-nav li a:focus,
 .main-nav li a:active,
 .main-nav li.current-menu-item a {
-    color: #6840de !important;
-    border-bottom: 10px solid #6840de !important;
+    color: var(--nav-hover-color) !important;
+    border-bottom: 10px solid var(--nav-border-hover) !important;
     background-color: transparent !important;
 }
 
@@ -100,13 +109,13 @@
 .main-navigation .main-nav ul li:not([class*="current-menu-"]):hover > a,
 .main-navigation .main-nav ul li:not([class*="current-menu-"]):focus > a,
 .main-navigation .main-nav ul li.sfHover:not([class*="current-menu-"]) > a {
-    color: #6840de !important;
-    border-bottom-color: #6840de !important;
+    color: var(--nav-hover-color) !important;
+    border-bottom-color: var(--nav-border-hover) !important;
 }
 
 .main-navigation .main-nav ul li[class*="current-menu-"] > a {
-    color: #6840de !important;
-    border-bottom-color: #6840de !important;
+    color: var(--nav-active-color) !important;
+    border-bottom-color: var(--nav-border-hover) !important;
 }
 
 /* ========================================
@@ -114,7 +123,7 @@
    ======================================== */
 
 body.home {
-    background-color: #fafafa;
+    background-color: var(--hover-color);
 }
 
 .entry-header {
@@ -128,35 +137,35 @@ body.home {
 .home-mosaic {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-    padding: 4rem 2rem;
+    gap: var(--spacing-xl);
+    padding: var(--spacing-3xl) var(--spacing-xl);
     max-width: 1400px;
     margin: 0 auto;
 }
 
 /* Carte standard (1x1) */
 .home-mosaic li {
-    background: #fff;
-    border: 1px solid #e8e8e8;
+    background: var(--card-bg);
+    border: var(--border-width) solid var(--card-border-color);
     border-radius: 0;
     padding: 0;
     overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: none;
+    transition: var(--card-transition);
+    box-shadow: var(--card-shadow);
     position: relative;
     display: flex;
     flex-direction: column;
 }
 
 .home-mosaic li:hover {
-    border-color: #6840de;
+    border-color: var(--secondary-color);
     box-shadow: 0 8px 24px rgba(104, 64, 222, 0.12);
 }
 
 /* Image featured */
 .home-mosaic .wp-block-latest-posts__featured-image {
     overflow: hidden;
-    background: linear-gradient(135deg, #6840de08, #6840de04);
+    background: linear-gradient(135deg, rgba(104, 64, 222, 0.03), rgba(104, 64, 222, 0.02));
     aspect-ratio: 4/3;
     margin: 0;
     padding: 0;
@@ -166,7 +175,7 @@ body.home {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.6s ease;
+    transition: transform var(--transition-slow) ease;
 }
 
 .home-mosaic li:hover .wp-block-latest-posts__featured-image img {
@@ -176,23 +185,22 @@ body.home {
 /* Contenu de la carte */
 .home-mosaic .wp-block-latest-posts__post-title {
     font-size: 1.3rem;
-    font-weight: 700;
-    line-height: 1.4;
-    color: #000;
-    margin: 1.5rem;
-    margin-bottom: 0.5rem;
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-heading);
+    color: var(--card-title-color);
+    margin: var(--spacing-lg) var(--spacing-lg) var(--spacing-sm);
     text-decoration: none;
 }
 
 .home-mosaic li:hover .wp-block-latest-posts__post-title {
-    color: #6840de;
+    color: var(--secondary-color);
 }
 
 /* Date */
 .home-mosaic .wp-block-latest-posts__post-date {
     font-size: 0.85rem;
-    color: #999;
-    margin: 0 1.5rem;
+    color: var(--card-meta-color);
+    margin: 0 var(--spacing-lg);
     text-transform: uppercase;
     letter-spacing: 0.8px;
 }
@@ -200,9 +208,9 @@ body.home {
 /* Excerpt */
 .home-mosaic .wp-block-latest-posts__post-excerpt {
     font-size: 0.95rem;
-    color: #666;
-    line-height: 1.6;
-    margin: 1rem 1.5rem 1.5rem;
+    color: var(--text-muted);
+    line-height: var(--line-height-base);
+    margin: var(--spacing-md) var(--spacing-lg) var(--spacing-lg);
     flex: 1;
 }
 
@@ -230,7 +238,7 @@ body.home {
 }
 
 .home-mosaic li.full-width .full-width-content {
-    padding: 3rem;
+    padding: var(--spacing-2xl);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -238,32 +246,32 @@ body.home {
 
 .home-mosaic li.full-width .wp-block-latest-posts__post-title {
     font-size: 1.8rem;
-    margin: 0 0 1rem 0;
+    margin: 0 0 var(--spacing-md) 0;
 }
 
 .home-mosaic li.full-width .wp-block-latest-posts__post-excerpt {
     margin: 0;
-    color: #666;
+    color: var(--text-muted);
 }
 
 /* Catégorie badge */
 .post-category {
     display: inline-block;
-    background-color: #6840de;
-    color: #fff;
+    background-color: var(--category-bg) !important;
+    color: var(--category-text);
     padding: 0.4rem 0.8rem;
     font-size: 0.75rem;
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     text-transform: uppercase;
     letter-spacing: 0.6px;
     border-radius: 0;
     text-decoration: none;
-    margin-bottom: 1rem;
-    transition: all 0.3s ease;
+    margin-bottom: var(--spacing-md);
+    transition: var(--transition-normal);
 }
 
 .post-category:hover {
-    background-color: #5629c2;
+    background-color: var(--secondary-color);
 }
 
 /* ========================================
@@ -273,8 +281,8 @@ body.home {
 @media (max-width: 1024px) {
     .home-mosaic {
         grid-template-columns: repeat(2, 1fr);
-        gap: 1.5rem;
-        padding: 3rem 1.5rem;
+        gap: var(--spacing-lg);
+        padding: var(--spacing-2xl) var(--spacing-lg);
     }
 
     .home-mosaic li.wide,
@@ -292,11 +300,11 @@ body.home {
     }
 
     .home-mosaic li.full-width .full-width-content {
-        padding: 2rem;
+        padding: var(--spacing-xl);
     }
 
     .main-nav > ul {
-        gap: 1.5rem;
+        gap: var(--spacing-lg);
     }
 
     .main-nav a {
@@ -307,8 +315,8 @@ body.home {
 @media (max-width: 768px) {
     .home-mosaic {
         grid-template-columns: 1fr;
-        gap: 1rem;
-        padding: 2rem 1rem;
+        gap: var(--spacing-md);
+        padding: var(--spacing-xl) var(--spacing-md);
     }
 
     .home-mosaic li.wide,
@@ -321,7 +329,7 @@ body.home {
     }
 
     .site-header {
-        padding: 1.5rem 0;
+        padding: var(--spacing-lg) 0;
     }
 
     .site-logo img {
@@ -329,7 +337,7 @@ body.home {
     }
 
     .inside-header {
-        padding: 0 1rem;
+        padding: 0 var(--spacing-md);
     }
 }
 
@@ -339,26 +347,26 @@ body.home {
 
 .archive .entry-header,
 .category .entry-header {
-    background: linear-gradient(135deg, #6840de, #5629c2);
-    color: #fff;
-    padding: 4rem 2rem;
+    background: linear-gradient(135deg, var(--secondary-color), var(--secondary-color-dark));
+    color: var(--font-color-light);
+    padding: var(--spacing-3xl) var(--spacing-xl);
     text-align: left;
     border-bottom: 0;
-    margin-bottom: 3rem;
+    margin-bottom: var(--spacing-2xl);
 }
 
 .archive .entry-header h1,
 .category .entry-header h1 {
-    color: #fff;
+    color: var(--font-color-light);
     font-size: 2.5rem;
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     margin: 0;
 }
 
 .archive .entry-header .archive-meta,
 .category .entry-header .archive-meta {
     color: rgba(255, 255, 255, 0.8);
-    margin-top: 0.5rem;
+    margin-top: var(--spacing-sm);
 }
 
 /* ========================================
@@ -366,22 +374,22 @@ body.home {
    ======================================== */
 
 .site-footer {
-    background: #000;
-    color: #fff;
-    padding: 4rem 2rem;
-    margin-top: 4rem;
+    background: var(--footer-bg);
+    color: var(--footer-text-color);
+    padding: var(--spacing-3xl) var(--spacing-xl);
+    margin-top: var(--spacing-3xl);
 }
 
 .site-info {
-    background: #000;
-    color: #fff;
+    background: var(--footer-bg);
+    color: var(--footer-text-color);
     text-align: center;
-    padding: 2rem;
-    border-top: 1px solid #333;
+    padding: var(--spacing-xl);
+    border-top: var(--border-width) solid var(--border-color);
 }
 
 .site-info a {
-    color: #6840de;
+    color: var(--secondary-color);
     text-decoration: none;
 }
 
@@ -405,27 +413,27 @@ body.home {
 
 /* Retirer les styles par défaut des liens */
 a {
-    transition: all 0.3s ease;
+    transition: var(--transition-normal);
 }
 
 /* Boutons */
 button,
 .button,
 input[type="submit"] {
-    background-color: #6840de;
-    color: #fff;
+    background-color: var(--secondary-color);
+    color: var(--font-color-light);
     border: 0;
-    padding: 0.75rem 1.5rem;
-    font-weight: 600;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    font-weight: var(--font-weight-medium);
     border-radius: 0;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: var(--transition-normal);
 }
 
 button:hover,
 .button:hover,
 input[type="submit"]:hover {
-    background-color: #5629c2;
+    background-color: var(--secondary-color-dark);
 }
 
 /* ========================================
@@ -444,7 +452,7 @@ input[type="submit"]:hover {
 }
 
 .home-mosaic li {
-    animation: slideInUp 0.6s ease-out both;
+    animation: slideInUp var(--transition-slow) ease-out both;
 }
 
 .home-mosaic li:nth-child(1) { animation-delay: 0.1s; }
