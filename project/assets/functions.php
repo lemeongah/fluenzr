@@ -334,7 +334,7 @@ function add_mosaic_click_handler() {
 function add_google_analytics()
 {
     // Récupérer l'ID de mesure depuis la variable d'environnement
-    $measurement_id = getenv('GTAG_ID') ?: '';
+    $measurement_id = getenv('GTAG_ID') ?: 'G-92RYJE4TV4';
 
     // Ne charger gtag que si un ID est fourni
     if (empty($measurement_id)) {
