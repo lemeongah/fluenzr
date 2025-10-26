@@ -68,6 +68,10 @@
 .home-mosaic li.full-width.restructured {
     border: 15px solid var(--font-color);
 }
+.site-content .content-area {
+    margin-left: 4vw;
+    margin-right: 0px!important;
+}
 /* Styling du logo - qui est dans le ul.menu */
 .main-nav .site-logo {
     display: block !important;
