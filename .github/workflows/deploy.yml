@@ -42,14 +42,10 @@ jobs:
             # Initialize git repo (fresh)
             echo "📥 Initialisation du repository..."
             git init
-            git remote add origin git@github.com:${{ github.repository }}.git
+            git remote add origin https://github.com/${{ github.repository }}.git
 
             echo "🔄 Synchronisation du code depuis GitHub..."
-            git fetch origin main 2>&1 || {
-              echo "⚠️  Fetch échoué, tentative de configuration SSH..."
-              ssh-keyscan -H github.com >> ~/.ssh/known_hosts 2>/dev/null || true
-              git fetch origin main
-            }
+            git fetch origin main
 
             echo "✨ Reset au dernier commit..."
             git reset --hard origin/main
