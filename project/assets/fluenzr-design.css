@@ -68,6 +68,9 @@
 .home-mosaic li.full-width.restructured {
     border: 15px solid var(--font-color);
 }
+.home-mosaic.wp-block-latest-posts.is-grid {
+    min-width: 90vw!important;
+}
 .site-content .content-area {
     margin-left: 4vw;
     margin-right: 0px!important;
