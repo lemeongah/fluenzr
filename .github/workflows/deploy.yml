@@ -59,10 +59,24 @@ jobs:
             echo "🚀 Redémarrage des services Docker..."
             cd "$DEPLOY_DIR/project"
 
+            # ⚠️  IMPORTANT: Backup la base de données AVANT le redémarrage
+            echo "💾 Création d'une sauvegarde de sécurité..."
+            mkdir -p backups
+            BACKUP_FILE="backups/backup_before_deploy_$(date +%Y%m%d_%H%M%S).sql.gz"
+
+            # Vérifier si la base de données existe
+            if docker compose ps db 2>/dev/null | grep -q "Up"; then
+              echo "  → Dumping de la base de données..."
+              docker compose exec -T db sh -c "exec mysqldump -u\$DB_USER -p\$DB_PASSWORD \$DB_NAME" | gzip > "$BACKUP_FILE" 2>/dev/null || echo "  ⚠️  Backup échoué (BDD peut être vierge)"
+              if [ -f "$BACKUP_FILE" ] && [ -s "$BACKUP_FILE" ]; then
+                echo "  ✅ Backup créé: $BACKUP_FILE"
+              fi
+            fi
+
             # Arrêter les services mais préserver les volumes (DB)
             docker compose down || true
 
-            # Redémarrer avec reconstruction
+            # Redémarrer avec reconstruction (préserve les volumes)
             docker compose up -d --build
 
             echo "✅ Déploiement terminé pour $REPO_NAME"
