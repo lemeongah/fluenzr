@@ -5,6 +5,43 @@
  * Ce fichier est intelligent et s'adapte automatiquement à l'environnement (local/production)
  */
 
+/**
+ * INJECT META DESCRIPTIONS DIRECTLY
+ * Injecte directement les meta descriptions dans le <head>
+ * pour que Google les voie, sans dépendre de RankMath
+ */
+add_action('wp_head', 'inject_meta_description', 1);
+function inject_meta_description() {
+    if (!is_singular('post')) {
+        return;
+    }
+
+    $post_id = get_the_ID();
+
+    // 1. Essayer de récupérer depuis rank_math_description
+    $description = get_post_meta($post_id, 'rank_math_description', true);
+
+    // 2. Si pas trouvé, essayer depuis l'excerpt
+    if (empty($description)) {
+        $post = get_post($post_id);
+        $description = $post->post_excerpt;
+    }
+
+    // 3. Si toujours pas trouvé, générer depuis le contenu (160 chars)
+    if (empty($description)) {
+        $post = get_post($post_id);
+        $description = substr(strip_tags($post->post_content), 0, 160);
+        if (strlen(strip_tags($post->post_content)) > 160) {
+            $description .= '...';
+        }
+    }
+
+    // Afficher la balise meta description
+    if (!empty($description)) {
+        echo '<meta name="description" content="' . esc_attr($description) . '" />' . "\n";
+    }
+}
+
 // Détection de l'environnement
 function is_production()
 {
