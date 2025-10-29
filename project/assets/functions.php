@@ -585,6 +585,51 @@ add_action('generate_after_footer', function () {
         echo '<div class="footer-links-shared" role="complementary">' . $snippet . '</div>';
     }
 }, 20);
+  /**
+   * Auto-generate meta descriptions from meta.seo
+   * Maps N8N Claude-generated descriptions to RankMath
+   */
+  add_action('wp_insert_post', 'auto_generate_rank_math_description', 10, 3);
+  function auto_generate_rank_math_description($post_id, $post, $update) {
+      // Ne traiter que les posts publiés
+      if ($post->post_type !== 'post' || $post->post_status !== 'publish') {
+          return;
+      }
+
+      // Récupérer la description existante
+      $existing_desc = get_post_meta($post_id, 'rank_math_description', true);
+
+      // Si elle existe déjà, ne pas la remplacer
+      if (!empty($existing_desc)) {
+          return;
+      }
+
+      // Récupérer la description depuis meta.seo (envoyée par N8N)
+      $seo_description = get_post_meta($post_id, 'seo', true);
+
+      // Si pas de seo, générer à partir du contenu
+      if (empty($seo_description) && !empty($post->post_content)) {
+          // Extraire les 160 premiers caractères du contenu (sans HTML)
+          $seo_description = substr(strip_tags($post->post_content), 0, 160);
+          // Ajouter "..." si le contenu était plus long
+          if (strlen(strip_tags($post->post_content)) > 160) {
+              $seo_description .= '...';
+          }
+      }
+
+      // Sauvegarder comme rank_math_description
+      if (!empty($seo_description)) {
+          update_post_meta($post_id, 'rank_math_description', $seo_description);
+      }
+
+      // Générer aussi un excerpt si absent
+      if (empty($post->post_excerpt) && !empty($seo_description)) {
+          wp_update_post(array(
+              'ID' => $post_id,
+              'post_excerpt' => $seo_description
+          ));
+      }
+  }
 
 // Route de purge pour admins: ?flush_shared_footer=1
 add_action('init', function () {
