@@ -140,3 +140,6 @@ Version: 1.0
 .inside-header {
     justify-content: flex-start!important;
 }
+.home-mosaic li.full-width.restructured {
+    max-height: 500px!important;
+}
