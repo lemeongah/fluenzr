@@ -19,7 +19,8 @@ if (!defined('ABSPATH')) {
     <?php wp_head(); ?>
     <script src="https://unpkg.com/css-doodle@0.15.3/css-doodle.min.js"></script>
 </head>
-<script type="text/javascript" src="https://s.skimresources.com/js/292380X1779517.skimlinks.js"></script>
+<!-- Skimlinks désactivé - causait une demande d'accès réseau local -->
+<!-- <script type="text/javascript" src="https://s.skimresources.com/js/292380X1779517.skimlinks.js"></script> -->
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
