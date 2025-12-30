@@ -80,7 +80,7 @@
 .main-nav .site-logo {
     display: block !important;
     margin-right: 0 !important;
-    margin-bottom: var(--spacing-lg) !important;
+    width:100%;
 }
 .home-mosaic li.single-normal {
     border: 15px solid  var(--secondary-color);
