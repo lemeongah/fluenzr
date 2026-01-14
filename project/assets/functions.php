@@ -5,6 +5,36 @@
  * Ce fichier est intelligent et s'adapte automatiquement à l'environnement (local/production)
  */
 
+// ========================================
+// SEO: GESTION DES URLs MALFORMÉES (410 Gone)
+// ========================================
+// Retourne 410 Gone pour les URLs avec guillemets (erreurs de parsing WordPress)
+// Ces URLs n'ont jamais existé et doivent être désindexées rapidement par Google
+add_action('template_redirect', 'handle_malformed_urls', 1);
+function handle_malformed_urls() {
+    $request_uri = $_SERVER['REQUEST_URI'] ?? '';
+
+    // Patterns d'URLs malformées à bloquer avec 410 Gone
+    $malformed_patterns = [
+        // URLs avec guillemets imbriqués (erreurs de contenu WordPress)
+        '/^\/?"http/',
+        '/^\/["\']/',
+        '/\/"https?:/',
+        // Fichiers internes exposés par erreur
+        '/\/wp-content\/themes\/.*\.php$/',
+        '/\/wp-content\/plugins\/.*\.php$/',
+    ];
+
+    foreach ($malformed_patterns as $pattern) {
+        if (preg_match($pattern, $request_uri)) {
+            status_header(410);
+            nocache_headers();
+            echo '410 Gone - This page has been permanently removed';
+            exit;
+        }
+    }
+}
+
 /**
  * INJECT META DESCRIPTIONS DIRECTLY
  * Injecte directement les meta descriptions dans le <head>
@@ -677,3 +707,36 @@ add_action('init', function () {
         exit;
     }
 });
+
+// ========================================
+// SEO: ROBOTS.TXT AMÉLIORÉ
+// ========================================
+// Ajoute des règles de blocage pour éviter l'indexation de fichiers internes
+add_filter('robots_txt', 'custom_robots_txt', 10, 2);
+function custom_robots_txt($output, $public) {
+    // Ajouter des règles de blocage supplémentaires
+    $custom_rules = "
+# Block internal WordPress files
+Disallow: /wp-content/themes/*/
+Disallow: /wp-content/plugins/*/
+Disallow: /wp-includes/
+Disallow: /wp-admin/
+Disallow: /*.php$
+Disallow: /*?*
+Disallow: /feed/
+Disallow: /trackback/
+Disallow: /xmlrpc.php
+
+# Block URLs with quotes (malformed)
+Disallow: /*\"*
+Disallow: /*'*
+
+# Allow important files
+Allow: /wp-content/uploads/
+
+# Sitemap
+Sitemap: " . home_url('/sitemap_index.xml') . "
+";
+
+    return $output . $custom_rules;
+}
